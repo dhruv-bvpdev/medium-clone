@@ -1,8 +1,9 @@
 import Head from 'next/head'
 import Header from '../components/Header'
-import { sanityClient } from '../sanity'
+import { sanityClient, urlFor } from '../sanity'
 import MediumLogoText from '../public/medium-logo-text.png'
 import { Post } from '../typings'
+import Link from 'next/link'
 
 interface Props {
   posts: [Post]
@@ -36,8 +37,28 @@ const Home = ({ posts }: Props) => {
         <img
           className="hidden lg:inline-flex h-full"
           src={MediumLogoText.src}
-          alt=""
+          alt="medium-logo-text"
         />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 p-2 md:p-6">
+        {posts.map(post => (
+          <Link key={post._id} href={`/post/${post.slug.current}`}>
+            <div className="border rounded-lg group cursor-pointer overflow-hidden">
+              <img
+                className="h-60 w-full object-cover group-hover:scale-105 transition-transform duration-200 ease-in-out"
+                src={urlFor(post.mainImage).url()}
+                alt={post.title}
+              />
+              <div className="p-5 bg-white">
+                <p className="text-lg font-bold">{post.title}</p>
+                <p className="text-sm">
+                  {post.description} by {post.author.name}
+                </p>
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   )
