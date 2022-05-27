@@ -1,9 +1,15 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Header from '../components/Header'
+import { sanityClient } from '../sanity'
 import MediumLogoText from '../public/medium-logo-text.png'
+import { Post } from '../typings'
 
-const Home: NextPage = () => {
+interface Props {
+  posts: [Post]
+}
+
+const Home = ({ posts }: Props) => {
+  console.log(posts)
   return (
     <div className="max-w-7xl mx-auto">
       <Head>
@@ -28,7 +34,7 @@ const Home: NextPage = () => {
           </h2>
         </div>
         <img
-          className="hidden lg:inline-flex h-32 "
+          className="hidden lg:inline-flex h-full"
           src={MediumLogoText.src}
           alt=""
         />
@@ -38,3 +44,26 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export const getServerSideProps = async () => {
+  const query = `
+  *[_type == "post"] {
+    _id,
+    title,
+    author -> {
+      name, 
+      image
+    },
+    description,
+    mainImage,
+    slug,
+  }
+  `
+
+  const posts = await sanityClient.fetch(query)
+  return {
+    props: {
+      posts
+    }
+  }
+}
