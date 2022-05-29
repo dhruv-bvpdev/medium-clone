@@ -12,6 +12,11 @@ export interface Post {
       url: string
     }
   }
+  secondaryImage: {
+    asset: {
+      url: string
+    }
+  }
   slug: {
     current: string
   }
